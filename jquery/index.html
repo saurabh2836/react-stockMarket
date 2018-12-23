@@ -2,39 +2,36 @@
 <html>
 
 <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     <script type="text/javascript">
+     let list = {};
         function WebSocketTest() {
             if ("WebSocket" in window) {
                 // Let us open a web socket
                 var ws = new WebSocket("ws://stocks.mnet.website");
                 ws.onmessage = function (evt) {
                     var received_msg = JSON.parse(evt.data);
-                    let list = [];
                     $.each(received_msg,function(index, value){
+                       if( list.hasOwnProperty(value[0].toUpperCase()) ){
                         list[value[0].toUpperCase()] = value[1].toFixed(2);
+                       }
+                       else{
+                        list[value[0].toUpperCase()] = value[1].toFixed(2);
+                       }
                     });
+                    let rowData = '';
+                    $.each(list, function(key,value){
+                        rowData += '<tr>';
+                        rowData += '<td>' + key + '</td>';
+                        rowData += '<td>' + value + '</td>';
+                        rowData += '<td>' + evt.timeStamp + '</td>';
+                        rowData += '</tr>';
+                    });
+                    $("#tblEntAttributes tbody").append(rowData);
 
-                     for(count = 0; count < list.length; count++) {
-                        debugger;
-                        console.log(list[count]);
-                    // let rowData = '';
-                    //         rowData += '<tr>';
-                    //         rowData += '<td>' + x + '</td>';
-                    //         rowData += '<td>' + value[1].toFixed(2) + '</td>';
-                    //         rowData += '</tr>';
-                    //     $("#tblEntAttributes tbody").append(rowData);
-                    }
-                    console.log(list);
-                    // $.each(received_msg, function (index, value) {
-                    //     let rowData = '';
-                    //         rowData += '<tr>';
-                    //         rowData += '<td>' + value[0] + '</td>';
-                    //         rowData += '<td>' + value[1].toFixed(2) + '</td>';
-                    //         rowData += '</tr>';
-                    //     $("#tblEntAttributes tbody").append(rowData);
-                    // });
 
                     }
                 ws.onclose = function () {
@@ -52,30 +49,34 @@
 </head>
 
 <body>
-    <div id="sse">
-        <a href="javascript:WebSocketTest()">Run WebSocket</a>
-    </div>
-    <div>
-        <table id='tblEntAttributes'>
-            <thead>
-                <tr>
-                    <td>
-                        Ticker
-                    </td>
-                    <td>
-                        Price
-                    </td>
-                    <td>
-                        Last Updated
-                    </td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
+    <div class="container-fluid text-center">
+            <div class="row">
+                <div id="sse">
+                    <a href="javascript:WebSocketTest()">Run WebSocket</a>
+                </div>
+                <div>
+                    <table id='tblEntAttributes' class="table">
+                        <thead>
+                            <tr>
+                                <td>
+                                    Ticker
+                                </td>
+                                <td>
+                                    Price
+                                </td>
+                                <td>
+                                    Last Updated(Time stamp)
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
 
-                </tr>
-            </tbody>
-        </table>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
     </div>
 
 
